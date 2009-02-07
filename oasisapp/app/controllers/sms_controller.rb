@@ -1,4 +1,8 @@
-class SMSController < ApplicationController
+class SmsController < ApplicationController
+ 	def index
+		
+	end
+
   def initialize(phoneNum,smsText)
     @@phoneNum = phoneNum
     @@smsText = smsText
