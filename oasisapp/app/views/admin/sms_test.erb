@@ -6,46 +6,42 @@
 		<title>Administrators Login</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-		<link href="css/dirlister.css" type="text/css" rel="stylesheet">
-		<link href="css/dirlister_style.css" type="text/css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" media="all" href="myStyles.css">
-
 	</head>
 <body>
 
 <div class="container">
-	
+
 	<div class="admin_title"><b>Administrator's Login</b></div>
-		
+
 	<div class="logo">
 		<div class="invis">
 			<h1>OASIS</h1><br/><h2>Online Access Student Information System</h2>
 		</div>
-		
+
 	</div>
-	
+
 	<div class="slu">
 		<div class="invis">
 			<h2>Saint Louis University</h2>
 		</div>
-	</div>	
+	</div>
 
 	<div style="position:absolute; top:250px; left:500px;">
 	<div class="admin-form">
-		 <% form_tag do %>
+		 <% form_tag 'sms', :method => post do %>
     <fieldset>
       <legend>Login</legend>
 
       <div>
         <label for="Username">Username:</label>
         <br>
-        <%= text_field_tag :name, params[:username] %>
+        <%= text_field_tag :phone, params[:phone] %>
       </div>
 			<br>
       <div>
         <label for="Password">Password:</label>
         <br>
-        <%= password_field_tag :password, params[:password] %>
+        <%= password_field_tag :smstext, params[:text] %>
       </div>
   		<br>
       <div>
@@ -61,4 +57,3 @@
 
 </body>
 </html>
-
