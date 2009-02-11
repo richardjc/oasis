@@ -21,24 +21,29 @@ xml.Workbook({
    end
   end
  
-  xml.Worksheet 'ss:Name' => 'Blahblah' do
+  xml.Worksheet 'ss:Name' => 'name of worksheet' do
     xml.Table do
       
       # Header
       xml.Row do
-        for column in Changes.content_columns do
+        for column in Report.content_columns do
           xml.Cell do
-            xml.Data column.human_name, 'ss:Type' => 'String'
+          		unless column.human_name == "Created at" || column.human_name == "Updated at"
+            	xml.Data column.human_name, 'ss:Type' => 'String'
+            	end
           end
         end
+        
       end
       
       # Rows
-      for record in @changes
+      for record in @reports
         xml.Row do
-          for column in Changes.content_columns do
-            xml.Cell do
+          for column in Report.content_columns do
+            xml.Cell do 
+              unless column.human_name == "Created at" || column.human_name == "Updated at"
               xml.Data record.send(column.name), 'ss:Type' => 'String'
+              end
             end
           end
         end

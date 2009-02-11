@@ -5,7 +5,7 @@
 <head>
 <title>OASIS Administrator</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<%= javascript_include_tag 'prototype' %>
+<%= calendar_date_select_includes nil %>
 <!-- webfxlayout.js -->
 <script type="text/javascript">
 
@@ -120,7 +120,7 @@ function WebFXMenuButton() {}
 	    
 	    <script type="text/javascript">tp1.addTabPage( document.getElementById( "tabPage1" ) );</script>
 		
-		<fieldset class="fieldset" style="width: 920px; height:195px;">
+		<fieldset class="fieldset" style="width: 920px; height:195px;overflow:auto;">
 			<legend class="groupbox">Administrators</legend>
 			<div style="position:relative; overflow:auto; "onclick="clickEditAdmin()">
 			<script language="text/javascript" type="text/javascript">
@@ -136,7 +136,7 @@ function WebFXMenuButton() {}
 				aa[1]='Username';
 				aa[2]='Position';
 				aa[3]='Last Visit';
-				aa[4]='Active';
+				aa[4]='Status';
 				//  update the header and redraw
 				nlr1.updateHeader(aa);
 				<% @admins.each{ |admin| %>
@@ -155,31 +155,17 @@ function WebFXMenuButton() {}
 							aa[7]= <%= admin.email.to_json %>
 							aa[8]= <%= admin.id.to_json %>
 							nlr1.silentAdd(aa)
-						<% end%>
-					<% } %>
-					<% remain = 5 - @admins.length %>
-					<% if remain > 0 %>
-						<% remain.times do %>
-							aa[0]= ''
-							aa[1]= ''
-							aa[2]= ''
-							aa[3]= ''
-							aa[4]= ''
-							aa[5]= ''
-							aa[6]= ''
-							aa[7]= ''
-							aa[8]= ''
-							nlr1.silentAdd(aa)
 						<% end %>
-					<% end %>
+					<% } %>
+					
 				nlr1.draw();
 				-->  
 			</script>
 			</div>
 			<div style="position:relative;top:16px; float:right;left:-20px ">				
-				<%= button_to_function "Add", "addAdmin()" %>
-				<%= button_to_function "Activate", "enableAdmin()" %>	 
-				<%= button_to_function "Deactivate", "disableAdmin()" %>	 
+				<%= button_to_function "Add", "addAdmin()", :id => "button_admin_add" %>
+				<%= button_to_function "Activate", "enableAdmin()", :id => "button_admin_activate" %>	 
+				<%= button_to_function "Deactivate", "disableAdmin()", :id => "button_admin_deactivate" %>	 
 			</div>
 	    </fieldset>
 		<br /><br />
@@ -189,7 +175,7 @@ function WebFXMenuButton() {}
 				<div style="position:relative; float:left;">
 					<span style="position:relative; top:0px;">
 						<label for="First_name">First name:
-      					<%= text_field_tag :edit_admin_first_name, params[:edit_admin_first_name], :size => 45 %>
+      					<%= text_field_tag :edit_admin_first_name, params[:edit_admin_first_name], :size => 45, :maxlength => 25 %>
       					<%= hidden_field_tag :edit_admin_id, params[:edit_admin_id] %>
       				</label>
       				<br>
@@ -198,7 +184,7 @@ function WebFXMenuButton() {}
 					<span style="position:relative; top:6px;">
 						<label for="Last_name">Last name:
 							<span style="position:relative; left:1px;">
-      					<%= text_field_tag :edit_admin_last_name, params[:edit_admin_last_name], :size => 45 %>
+      					<%= text_field_tag :edit_admin_last_name, params[:edit_admin_last_name], :size => 45, :maxlength => 25 %>
       					</span>
       				</label>
       				<br>
@@ -207,7 +193,7 @@ function WebFXMenuButton() {}
 						<span style="position:relative; top:12px;">
 							<label for="Position">Position:
 							<span style="position:relative; left:15px;">
-      					<%= text_field_tag :edit_admin_position, params[:edit_admin_position], :size => 45 %>
+      					<%= text_field_tag :edit_admin_position, params[:edit_admin_position], :size => 45, :maxlength => 25 %>
       					</span>
       					</label>
       				<br>
@@ -216,7 +202,7 @@ function WebFXMenuButton() {}
 					<span style="position:relative; top:18px;">
 						<label for="Username">Username:
 							<span style="position:relative;left:3px;">
-      					<%= text_field_tag :edit_admin_username, params[:edit_admin_username], :size => 45 %>
+      					<%= text_field_tag :edit_admin_username, params[:edit_admin_username], :size => 45, :maxlength => 25 %>
       					</span>
       				</label>
       				<br>
@@ -232,7 +218,7 @@ function WebFXMenuButton() {}
 						<label for="Password">Password:
 						<% end %>
 							<span style="position:relative; left:2px">
-      					<%= password_field_tag :edit_admin_password, params[:edit_admin_password], :size => 45 %>
+      					<%= password_field_tag :edit_admin_password, params[:edit_admin_password], :size => 45, :maxlength => 25 %>
       					</span>
       				</label>
       				<br>
@@ -245,7 +231,7 @@ function WebFXMenuButton() {}
 						<label for="Confirm">Confirm:
 						<% end %>
 							<span style="position:relative; left:15px">
-      					<%= password_field_tag :edit_admin_confirm, params[:edit_admin_confirm], :size => 45 %>
+      					<%= password_field_tag :edit_admin_confirm, params[:edit_admin_confirm], :size => 45, :maxlength => 25 %>
       					</span>
       				</label>
       				<br>
@@ -267,7 +253,7 @@ function WebFXMenuButton() {}
 			</div>
 			<% end %>
 	    </fieldset>		
-		<br /><br />
+		
 		<% if flash[:notice] == "Add admin passwords do not match" %>
 		<fieldset id= "addAdmin" class="fieldset" style="width: 920px; height:150px;">
 		<% else %>
@@ -278,7 +264,7 @@ function WebFXMenuButton() {}
 				<div style="position:relative; float:left;">
 					<span style="position:relative; top:0px;">
 						<label for="First_name">First name:
-      					<%= text_field_tag :add_admin_first_name, params[:add_admin_first_name], :size => 45 %>
+      					<%= text_field_tag :add_admin_first_name, params[:add_admin_first_name], :size => 45, :maxlength => 25 %>
       				</label>
       				<br>
       				</br>
@@ -286,7 +272,7 @@ function WebFXMenuButton() {}
 					<span style="position:relative; top:6px;">
 						<label for="Last_name">Last name:
 							<span style="position:relative; left:1px;">
-      					<%= text_field_tag :add_admin_last_name, params[:add_admin_last_name], :size => 45 %>
+      					<%= text_field_tag :add_admin_last_name, params[:add_admin_last_name], :size => 45, :maxlength => 25 %>
       					</span>
       				</label>
       				<br>
@@ -295,7 +281,7 @@ function WebFXMenuButton() {}
 						<span style="position:relative; top:12px;">
 							<label for="Position">Position:
 							<span style="position:relative; left:15px;">
-      					<%= text_field_tag :add_admin_position, params[:add_admin_position], :size => 45 %>
+      					<%= text_field_tag :add_admin_position, params[:add_admin_position], :size => 45, :maxlength => 25 %>
       					</span>
       					</label>
       				<br>
@@ -304,7 +290,7 @@ function WebFXMenuButton() {}
 					<span style="position:relative; top:18px;">
 						<label for="Username">Username:
 							<span style="position:relative;left:3px">
-      					<%= text_field_tag :add_admin_username, params[:add_admin_username], :size => 45 %>
+      					<%= text_field_tag :add_admin_username, params[:add_admin_username], :size => 45, :maxlength => 25 %>
       					</span>
       				</label>
       				<br>
@@ -321,7 +307,7 @@ function WebFXMenuButton() {}
 					<label for="Password">Password:
 					<% end %>
 							<span style="position:relative; left:2px">
-      					<%= password_field_tag :add_admin_password, params[:add_admin_password], :size => 45 %>
+      					<%= password_field_tag :add_admin_password, params[:add_admin_password], :size => 45, :maxlength => 25 %>
       					</span>
       				</label>
       				<br>
@@ -335,7 +321,7 @@ function WebFXMenuButton() {}
 						<% end %>
 							<span style="position:relative; left:15px;">
 						
-      					<%= password_field_tag :add_admin_confirm, params[:add_admin_confirm], :size => 45 %>
+      					<%= password_field_tag :add_admin_confirm, params[:add_admin_confirm], :size => 45, :maxlength => 25 %>
       					</span>
       				</label>
       				<br>
@@ -381,6 +367,18 @@ function WebFXMenuButton() {}
 				document.getElementById("edit_admin_id").value = nlr1.elements[i][8];		
 				document.getElementById("disable_admin_id").value = nlr1.elements[i][8];	
 				document.getElementById("enable_admin_id").value = nlr1.elements[i][8];	
+				if(nlr1.elements[i][4]=="Active"){
+					document.getElementById("button_admin_activate").disabled = true
+					document.getElementById("button_admin_deactivate").disabled = false
+				
+				}
+				else{
+					document.getElementById("button_admin_activate").disabled = false
+					document.getElementById("button_admin_deactivate").disabled = true
+					
+				};
+				document.getElementById("button_admin_add").disabled = true
+				
 				Element.show('editAdmin');
 				
 			}
@@ -405,6 +403,7 @@ function WebFXMenuButton() {}
 				document.getElementById("edit_admin_password").value = ""
 				document.getElementById("edit_admin_confirm").value = ""
 				document.getElementById("edit_admin_email").value = ""
+				document.getElementById("button_admin_add").disabled = false
 				Element.hide('editAdmin');		
 			}
 			function enableAdmin(){
@@ -415,6 +414,7 @@ function WebFXMenuButton() {}
 			}
 			function addAdmin(){
 				Element.show('addAdmin');
+				
 			}
 			
 		</script>
@@ -427,15 +427,23 @@ function WebFXMenuButton() {}
 		<div class="sys_groupbox1">
 			<fieldset class="fieldset" style="width:100px; height:590px;">
 				<legend class="groupbox">Visits Per Day</legend>
-					From: <select><option>August 20, 2008</option></select>&nbsp;&nbsp;To: <select><option>September 18, 2008</option></select>&nbsp;
-					<input type="button" value="Filter">
+					<% form_tag '/admin/filter_reports', :id => "filter_reports" do %>
+	    	<label for="From">From:
+	    	<%= calendar_date_select_tag "report_from_date", nil %>
+	    	<br>
+	    	</label>
+	    	<label for="To">To:
+	    	<%= calendar_date_select_tag "report_to_date", nil %>
+	    	
+	    	</label>
+	    	<%= submit_tag "Filter" %>
+	    <% end %>
 					<br />
-					<span style="position:relative; font-size:14px; top:3px;"><b>Showing 1-29 of 29</b></span>
-					<div style="position:relative; overflow:auto; height:500px; top:4px;">
+					<div style="position:relative; overflow:auto; height:470px; top:4px;">
 						<script language="text/javascript" type="text/javascript">
 						<!--
 						//  let's create our list object
-						var nlr2=new mylist('nlr2','dvia2',3,158,110,110);
+						var nlr2=new mylist('nlr2','dvia2',3,165,114,114);
 						//  set it's width and height  
 						nlr2.setDims(300,100);
 						//  create array for item addition - you can use the same array for the header and items
@@ -447,172 +455,49 @@ function WebFXMenuButton() {}
 
 						//  update the header and redraw
 						nlr2.updateHeader(ab);
-						ab[0]='September 18, 2008'
-						ab[1]='724';
-						ab[2]='600';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 17, 2008'
-						ab[1]='705';
-						ab[2]='556';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 16, 2008'
-						ab[1]='471';
-						ab[2]='409';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 15, 2008'
-						ab[1]='381';
-						ab[2]='287';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 14, 2008'
-						ab[1]='369';
-						ab[2]='316';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 13, 2008'
-						ab[1]='581';
-						ab[2]='472';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 12, 2008'
-						ab[1]='1040';
-						ab[2]='634';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 11, 2008'
-						ab[1]='1016';
-						ab[2]='179';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 10, 2008'
-						ab[1]='216';
-						ab[2]='44';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 9, 2008'
-						ab[1]='393';
-						ab[2]='271';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 8, 2008'
-						ab[1]='575';
-						ab[2]='383';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 7, 2008'
-						ab[1]='1059';
-						ab[2]='170';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 6, 2008'
-						ab[1]='490';
-						ab[2]='392';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 5, 2008'
-						ab[1]='428';
-						ab[2]='80';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 4, 2008'
-						ab[1]='654';
-						ab[2]='627';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 3, 2008'
-						ab[1]='466';
-						ab[2]='305';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 2, 2008'
-						ab[1]='985';
-						ab[2]='167';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='September 1, 2008'
-						ab[1]='979';
-						ab[2]='259';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 31, 2008'
-						ab[1]='971';
-						ab[2]='287';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 30, 2008'
-						ab[1]='1070';
-						ab[2]='735';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 29, 2008'
-						ab[1]='429';
-						ab[2]='396';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 28, 2008'
-						ab[1]='466';
-						ab[2]='443';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 27, 2008'
-						ab[1]='1026';
-						ab[2]='406';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 26, 2008'
-						ab[1]='572';
-						ab[2]='514';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 25, 2008'
-						ab[1]='927';
-						ab[2]='373';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 24, 2008'
-						ab[1]='510';
-						ab[2]='234';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 23, 2008'
-						ab[1]='374';
-						ab[2]='229';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 22, 2008'
-						ab[1]='820';
-						ab[2]='784';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 21, 2008'
-						ab[1]='969';
-						ab[2]='431';
-						nlr2.silentAdd(ab);
-						
-						ab[0]='August 20, 2008'
-						ab[1]='499';
-						ab[2]='284';
-						nlr2.silentAdd(ab);
+						<% ctr = 0 %>
+						<% @reports.each{ |report| %>
+							<% if session[:report_from] && session[:report_to]
+									unless report.date < Date.parse(session[:report_from]) || report.date > Date.parse(session[:report_to])
+									ctr = ctr + 1  %>
+										ab[0]= <%= report.date.strftime("%B %d,%Y").to_json %>
+										ab[1]= <%= report.total.to_json %>
+										ab[2]= <%= report.unique.to_json %>
 
+										nlr2.silentAdd(ab)
+									<%end		
+								else%>
+								ab[0]= <%= report.date.strftime("%B %d,%Y").to_json %>
+										ab[1]= <%= report.total.to_json %>
+										ab[2]= <%= report.unique.to_json %>
+
+										nlr2.silentAdd(ab)
+								<% end %>
+							
+						
+					<% } %>
+					<% if ctr == 0 && session[:report_from] && session[:report_to]%>
+					<%= flash[:notice] = "The dates you selected bear no reports" %>
+					<% end %>
 						
 						nlr2.draw();
 						-->  
 					  </script>
 					 </div>
 					 <br />
-					 <center><< 1 2 3 4 5 6 7 8 9 10 >></center>
+					 <span style= "float:right">
+					 <%= button_to "Download Reports to Excel", :action => "export_reports" %>
+					 </span>
 			    </fieldset>		
 			</div>
 			<div class="sys_groupbox2">
 				<fieldset class="fieldset" style="width: 440px; height: 102px;">
 				<legend class="groupbox">Administrators Online</legend>
+				<div style="overflow:auto; height:102px;">
 					<script language="text/javascript" type="text/javascript">
 						<!--
 						//  let's create our list object
-						var nlr3=new mylist('nlr3','dvia3',3,97,200,134);
+						var nlr3=new mylist('nlr3','dvia3',3,116,185,130);
 						//  set it's width and height  
 						nlr3.setDims(300,100);
 						//  create array for item addition - you can use the same array for the header and items
@@ -625,18 +510,19 @@ function WebFXMenuButton() {}
 						//  update the header and redraw
 						nlr3.updateHeader(ac);
 
-						ac[0]='9-14-2008 9:30AM';
-						ac[1]='Jennifer Walters';
-						ac[2]='User Administrator';					
-						nlr3.silentAdd(ac);
-						ac[0]='9-14-2008 9:45AM';
-						ac[1]='Karlos Ong';
-						ac[2]='Content Administrator';					
-						nlr3.silentAdd(ac);					
+						<% @cur_ons.each{ |cur| %>
+					
+							ac[0]= <%= cur.date.strftime("%m/%d/%Y %I:%M%p").to_json %>
+							ac[1]= <%= cur.name.to_json %>
+							ac[2]= <%= cur.position.to_json %>
+							nlr3.silentAdd(ac)
+						
+						<% } %>				
 
 						nlr3.draw();
 						-->  
 				  </script>
+				  </div>
 		    </fieldset>
 			<br /><br />
 			<fieldset class="fieldset" style="width: 440px;">
@@ -652,7 +538,7 @@ function WebFXMenuButton() {}
 					Records Deleted Last: <br /><br />
 					Number of Blocked Accounts: <br /><br />
 				</div>
-				<div style="position:relative; float:left; text-align:right; left:10px; top:1px;">
+				<div style="position:relative; float:left; text-alignt:right; left:10px; top:1px;">
 					15,825 <br /><br />
 					21,512 <br /><br />
 					265 <br /><br />
@@ -672,10 +558,17 @@ function WebFXMenuButton() {}
 	    
 	    <script type="text/javascript">tp1.addTabPage( document.getElementById( "tabPage3" ) );</script>
 	    
-		From: <select><option>September 16, 2008</option></select>&nbsp;&nbsp;&nbsp;To: <select><option>September 17, 2008</option></select>			
-		&nbsp;&nbsp;<input type="button" value="Filter">
+		<% form_tag '/admin/filter_changes', :id => "filter_changes" do %>
+	    	<label for="From">From:
+	    	<%= calendar_date_select_tag "changes_from_date", nil, :time => true %>
+	    	</label>
+	    	<label for="To">To:
+	    	<%= calendar_date_select_tag "changes_to_date", nil, :time => true %>
+	    	</label>
+	    	<%= submit_tag "Filter" %>
+	    <% end %>
 		
-		<br /><br />
+		<br />
 		
 		<fieldset class="fieldset" style="width: 920px; height: 525px;">	
 			<div style="overflow:auto; height:525px;">
@@ -695,24 +588,31 @@ function WebFXMenuButton() {}
 
 					//  update the header and redraw
 					nlr4.updateHeader(ad);
+					<% ct = 0 %>
 					<% @changes.each{ |change| %>
-					
-							ad[0]= <%= change.created_at.strftime("%m/%d/%Y %I:%M%p").to_json %>
-							ad[1]= <%= Admin.find(change.admin_id).get_name.to_json %>
-							ad[2]= <%= change.change_made.to_json %>
-							ad[3]= <%= change.ip_add.to_json %>
-							nlr4.silentAdd(ad)
+							<% if session[:change_from] && session[:change_to]
+									unless change.created_at < Time.parse(session[:change_from]) || change.created_at > Time.parse(session[:change_to])
+									ct = ct + 1 %>
+										ad[0]= <%= change.created_at.strftime("%m/%d/%Y %I:%M%p").to_json %>
+										ad[1]= <%= Admin.find(change.admin_id).get_name.to_json %>
+										ad[2]= <%= change.change_made.to_json %>
+										ad[3]= <%= change.ip_add.to_json %>
+										nlr4.silentAdd(ad)
+										
+									<%end		
+								else%>
+								ad[0]= <%= change.created_at.strftime("%m/%d/%Y %I:%M%p").to_json %>
+								ad[1]= <%= Admin.find(change.admin_id).get_name.to_json %>
+								ad[2]= <%= change.change_made.to_json %>
+								ad[3]= <%= change.ip_add.to_json %>
+								nlr4.silentAdd(ad)
+								<% end %>
+							
 						
 					<% } %>
-
-					ad[0]='September 17, 2008 23:59';
-					ad[1]='Karlos Ong';
-					ad[2]='Blocked Account';
-					ad[3]='192.168.100.100';
-					nlr4.silentAdd(ad);
-					
-				
-					
+					<% if ct == 0 && session[:change_from] && session[:change_to]%>
+					<%= flash[:notice] = "The dates you selected bear no actions" %>
+					<% end %>
 					nlr4.draw();
 					-->  
 			  </script>
@@ -735,7 +635,7 @@ function WebFXMenuButton() {}
 				<script language="text/javascript" type="text/javascript">
 					<!--
 					//  let's create our list object
-					var nlr10=new mylist('nlr10','dvia10',2,120,260);
+					var nlr10=new mylist('nlr10','dvia10',2,150,245);
 					//  set it's width and height  
 					nlr10.setDims(300,100);
 					//  create array for item addition - you can use the same array for the header and items
@@ -748,64 +648,55 @@ function WebFXMenuButton() {}
 					nlr10.updateHeader(aj);
 
 						<% @announcements.each{ |announcement| %>
-						aj[0]= <%= announcement.date_time.strftime("%m/%d/%Y %I:%M%p").to_json %>
+						aj[0]= <%= announcement.date_time.strftime("%B %d, %Y %I:%M%p").to_json %>
 						aj[1]= <%= announcement.announcement.to_json %>
 						aj[2]= <%= announcement.summary.to_json %>
 						aj[3]= <%= announcement.id.to_json %>
 						nlr10.silentAdd(aj)
 					<% } %>
-					<% remain = 25 - @announcements.length %>
-					<% if remain > 0 %>
-						<% remain.times do %>
-							aj[0]= ''
-							aj[1]= ''
-							aj[2]= ''
-							aj[3]= ''
-							nlr10.silentAdd(aj)
-						<% end %>
-					<% end %>
+				
 					
 					nlr10.draw();
 					-->  
 				</script>				
 				</div>				
 				<input type="button" name="btn" value="Delete" style="position:relative;float:right; top:13px;" onclick="clickDeleteAnn()">
-				<input type="button" name="btn" value="Add" style="position:relative;float:right; top:13px; left:-5px;" onclick="clickAddAnn()">						
+				<input type="button" name="btn" id= "button_add_ann" value="Add" style="position:relative;float:right; top:13px; left:-5px;" onclick="clickAddAnn()">						
 		    </fieldset>
 		</div>
 		<div class="sys_groupbox2">
 			<fieldset id= "editAnnouncement" class="fieldset" style="width:420px; height:273px;display:none;">
 				<legend class="groupbox">Edit Announcement</legend>
-					<div style="float:left; left:10px; text-align:right; width:130px;">
-						<span style="position:relative; left:-20px; top:3px;">
-					Announcement: <br />
-						</span>
-						<span style="position:relative;left:-20px; top:17px;">
-							Date/Time: <br />
-						</span>
-						<span style="position:relative;left:-20px; top:31px;">
-							Summary: <br />
-						</span>
-					</div>
-					<div style="position:relative; float:left;left:-20px; width: 80px;">
+				
+					<div style="position:relative; float:left;">
 				<% form_tag '/admin/edit_announcement', :id => "edit_announcement" do %>
 
 								<div>
 									<span style="position:relative; top:2px;">
+										<label for="Announcement">Announcement:
 										<%= text_field_tag :edit_announcement_name, params[:edit_announcement_name], :size => 30 %>
+										</label>
 									</span>
+									<br>
 									<span style="position:relative; top:10px;">
-										<%= text_field_tag :edit_announcement_date, params[:edit_announcement_date], :size => 30 %>
+										<label for="Date/Time">Date/Time:
+										<span style="position:relative; left:28px";>
+										<%= calendar_date_select_tag "edit_announcement_date", nil, :time => true %>
+										</span>
+										</label>
 									</span>
-									<span style="position:relative; top:20px;">
+									<br>
+									<label for="Summary" style="position:relative; top:-120px;">Summary:</label>
+									<span style="position:relative; top:20px; left:30px">
+										
 										<%= text_area_tag :edit_announcement_summary, params[:edit_announcement_summary], :size => "40x9" %>
+										
 										<%= hidden_field_tag :edit_announcement_id, params[:edit_announcement_id] %>
 										
 									</span>
-									<span style="position:relative; top:25px; float:right; left:172px;">
+									<br>
+									<span style="position:relative; top:25px; float:right; left:30px">
 										<%= submit_tag "Save" %>
-									</span>
-									<span style="position:relative; float:right; left:230px;">
 										<%= button_to_function "Cancel", "cancelAnnEdit()" %>
 									</span>
 								</div>
@@ -819,35 +710,31 @@ function WebFXMenuButton() {}
 			<br />
 			<fieldset id= "addAnnouncement" class="fieldset" style="width:420px; height:273px;display:none;">
 				<legend class="groupbox">Add New Announcement</legend>
-					<div style="float:left; left:10px; text-align:right; width:130px;">
-						<span style="position:relative;left:-20px; top:3px;">
-					Announcement: <br />
-						</span>
-						<span style="position:relative;left:-20px; top:17px;">
-							Date/Time: <br />
-						</span>
-						<span style="position:relative;left:-20px; top:31px;">
-							Summary: <br />
-						</span>
-					</div>
-					<div style="position:relative; float:left;left:-20px; width: 80px;">
-					
-							<% form_remote_tag :id => 'add_announcement', :url => { :action => 'add_announcement' } do %>
+					<div style="position:relative; float:left;">
+						<% form_tag '/admin/add_announcement', :id => "add_announcement" do %>
 
 								<div>
 									<span style="position:relative; top:2px;">
+										<label for="Announcement">Announcement:
 										<%= text_field_tag :add_announcement_name, params[:add_announcement_name], :size => 30 %>
+										</label>
 									</span>
+									<br>
 									<span style="position:relative; top:10px;">
-										<%= text_field_tag :add_announcement_date, params[:add_announcement_date], :size => 30 %>
+										<label for="Date/Time">Date/Time:
+										<span style="position:relative; left:28px";>
+										<%= calendar_date_select_tag "add_announcement_date", nil, :time => true %>
+										</span>
+										</label>
 									</span>
-									<span style="position:relative; top:20px;">
+									<br>
+									<label for="Summary" style="position:relative; top:-120px;">Summary:</label>
+									<span style="position:relative; top:20px; left:30px">
 										<%= text_area_tag :add_announcement_summary, params[:add_announcement_summary], :size => "40x9" %>
 									</span>
-									<span style="position:relative; top:25px; float:right; left:172px;">
+									<br>
+									<span style="position:relative; top:25px; float:right; left:30px;">
 										<%= submit_tag "Save" %>
-									</span>
-									<span style="position:relative; float:right; left:230px;">
 										<%= button_to_function "Cancel", "cancelAnnAdd()" %>
 									</span>
 								</div>
@@ -864,6 +751,7 @@ function WebFXMenuButton() {}
 				document.getElementById("edit_announcement_name").value = nlr10.elements[j][1];
 				document.getElementById("edit_announcement_summary").value = nlr10.elements[j][2];
 				document.getElementById("edit_announcement_id").value = nlr10.elements[j][3];		
+				document.getElementById("button_add_ann").disabled = true
 				Element.show("editAnnouncement");
 			}
 			function cancelAnnAdd() {
@@ -879,6 +767,7 @@ function WebFXMenuButton() {}
 				document.getElementById("edit_announcement_name").value = ""
 				document.getElementById("edit_announcement_summary").value = ""
 				document.getElementById("edit_announcement_id").value = ""
+				document.getElementById("button_add_ann").disabled = false
 				Element.hide("editAnnouncement");		
 			}
 			function clickDeleteAnn(){
@@ -902,6 +791,7 @@ function WebFXMenuButton() {}
 		<div class="sys_groupbox1">
 			<fieldset class="fieldset" style="width: 400px; height:573px;">
 				<legend class="groupbox">Users</legend>
+				<div style="overflow:auto; height:573px;">
 				<script language="text/javascript" type="text/javascript">
 					<!--
 					//  let's create our list object
@@ -917,130 +807,19 @@ function WebFXMenuButton() {}
 					ae[3]='Status';
 					//  update the header and redraw
 					nlr5.updateHeader(ae);
-					ae[0]='tagbat';
-					ae[1]='Raphael Trilcoy';
-					ae[2]='1';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);					
-					ae[0]='superfather';
-					ae[1]='Farman Galow';
-					ae[2]='2';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);
-					ae[0]='doctormom';
-					ae[1]='Steth Oscope';
-					ae[2]='1';
-					ae[3]='Blocked';
-					nlr5.silentAdd(ae);
-					ae[0]='macatag';
-					ae[1]='Jose Macatag';
-					ae[2]='3';
-					ae[3]='Blocked';
-					nlr5.silentAdd(ae);					
-					ae[0]='dreamerdrummer';
-					ae[1]='Tommy Lee';
-					ae[2]='4';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);					
-					ae[0]='superguardian';
-					ae[1]='Jonathan Kent';
-					ae[2]='2';
-					ae[3]='Blocked';
-					nlr5.silentAdd(ae);
-					ae[0]='lindows';
-					ae[1]='Dough Nux';
-					ae[2]='2';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);
-					ae[0]='overnighter';
-					ae[1]='Ace Ventura';
-					ae[2]='5';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);
-					ae[0]='shreker';
-					ae[1]='Fiona Giselle';
-					ae[2]='1';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);					
-					ae[0]='converse';
-					ae[1]='Chuck Taylor';
-					ae[2]='3';
-					ae[3]='Blocked';
-					nlr5.silentAdd(ae);
-					ae[0]='cutestmom';
-					ae[1]='Missy Lohan';
-					ae[2]='6';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);
-					ae[0]='bleeder';
-					ae[1]='Leona Lewis';
-					ae[2]='1';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);					
-					ae[0]='loveis';
-					ae[1]='Sung Hsu';
-					ae[2]='1';
-					ae[3]='Active';
-					nlr5.silentAdd(ae);					
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);					
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);					
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);					
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);
-					ae[0]='';
-					ae[1]='';
-					ae[2]='';
-					ae[3]='';
-					nlr5.silentAdd(ae);
+								
+					<% @users.each{ |user| %>
+						ae[0]= <%= user.login.to_json %>
+						ae[1]= <%= user.get_full_name.to_json %>
+						ae[2]= 1
+						ae[3]= <%= user.status.to_json %>
+					nlr5.silentAdd(ae)
+					<% } %>
 					
 					nlr5.draw();
 					-->  
 				</script>
+				</div>
 				<br />
 				<div style="position:relative; float:right; top:-3px;">
 					<input type="button" name="btn" value="Block">
@@ -1097,17 +876,23 @@ function WebFXMenuButton() {}
 	    <h2 class="tab">User Query</h2>
 	    
 	    <script type="text/javascript">tp1.addTabPage( document.getElementById( "tabPage2" ) );</script>
-	    
-		From: <select><option>September 15, 2008</option></select>&nbsp;&nbsp;&nbsp;To: <select><option>September 20, 2008</option></select>
-		&nbsp;&nbsp<input type="button" value="Filter" />
-		<br /><br />
+	    <% form_tag '/admin/filter_query', :id => "filter_query" do %>
+	    	<label for="From">From:
+	    	<%= calendar_date_select_tag "query_from_date", nil, :time => true %>
+	    	</label>
+	    	<label for="To">To:
+	    	<%= calendar_date_select_tag "query_to_date", nil, :time => true %>
+	    	</label>
+	    	<%= submit_tag "Filter" %>
+	    <% end %>
+		<br />
 		
 		<fieldset class="fieldset" style="width:920px; height:240px;">
 			<div style="position:relative;height:200px; overflow:auto;"onclick="clickUserQuery()">
 			<script language="text/javascript" type="text/javascript">
 				<!--
 				//  let's create our list object
-				var nlr6=new mylist('nlr6','dvia6',5,210,190,300,140,60);
+				var nlr6=new mylist('nlr6','dvia6',5,215,193,300,140,60);
 				//  set it's width and height  
 				nlr6.setDims(300,80);
 				//  create array for item addition - you can use the same array for the header and items
@@ -1121,9 +906,22 @@ function WebFXMenuButton() {}
 
 				//  update the header and redraw
 				nlr6.updateHeader(af);
-
+				<% cts = 0 %>
 				<% @queries.each{ |query| %>
 				<% cur_user = User.find(query.user_id) %>
+				<% if session[:query_from] && session[:query_to]
+									unless query.created_at < Time.parse(session[:query_from]) || query.created_at > Time.parse(session[:query_to]) 
+									cts = cts + 1%>
+									af[0]= <%= cur_user.get_full_name.to_json %>
+									af[1]= <%= cur_user.email.to_json %>
+									af[2]= <%= query.subject.to_json %>
+									af[3]= <%= query.created_at.strftime("%m/%d/%Y %I:%M%p").to_json %>
+									af[4]= <%= if query.resolved then ('Yes').to_json else ('No').to_json end %>
+									af[5]= <%= query.message.to_json %>
+									af[6]= <%= query.id.to_json %>
+									nlr6.silentAdd(af)
+								<%end		
+						else%>
 						af[0]= <%= cur_user.get_full_name.to_json %>
 						af[1]= <%= cur_user.email.to_json %>
 						af[2]= <%= query.subject.to_json %>
@@ -1132,20 +930,13 @@ function WebFXMenuButton() {}
 						af[5]= <%= query.message.to_json %>
 						af[6]= <%= query.id.to_json %>
 						nlr6.silentAdd(af)
-					<% } %>
-					<% remain = 8 - @queries.length %>
-					<% if remain > 0 %>
-						<% remain.times do %>
-							af[0]= ''
-							af[1]= ''
-							af[2]= ''
-							af[3]= ''
-							af[4]= ''
-							af[5]= ''
-							af[5]= ''
-							nlr6.silentAdd(af)
 						<% end %>
-					<% end %>			
+					<% } %>
+					<% if cts == 0 && session[:query_from] && session[:query_to]%>
+					<%= flash[:notice] = "The dates you selected bear no queries" %>
+					<% end %>
+				
+								
 			
 				nlr6.draw();
 				-->  
@@ -1153,7 +944,7 @@ function WebFXMenuButton() {}
 			</div>
 			<div style="position:absolute; top:263px; width:96%;">
 				<span style="position:relative; float:right">
-					<%= button_to_function 'Resolve', "resolveQuery()" %> 
+					<%= button_to_function 'Resolve', "resolveQuery()", :id => "button_resolve" %> 
 					<%= button_to_function "Delete", "deleteUserQuery()" %>
 					
 				</span>
@@ -1190,6 +981,10 @@ function WebFXMenuButton() {}
 		<% end %>
 	  </div>
 	  <script language="text/javascript" type="text/javascript">
+	  		function disableResolve() {
+	  			document.getElementById("button_resolve").disabled = true;
+	  		}
+	  		disableResolve();
 			function clickUserQuery() {
 				var i = nlr6.selected;
 				document.getElementById("message_sender").value = nlr6.elements[i][0];
@@ -1201,6 +996,7 @@ function WebFXMenuButton() {}
 				document.getElementById("resolve_user_query_id").value = nlr6.elements[i][6];
 				document.getElementById("resolve_user_query_subject").value = nlr6.elements[i][2];
 				document.getElementById("resolve_user_query_sender").value = nlr6.elements[i][0];
+				document.getElementById("button_resolve").disabled = false;
 				Element.show("Sender");
 				Element.show("MessageBox");
 					
@@ -1220,11 +1016,39 @@ function WebFXMenuButton() {}
 				document.getElementById("resolve_query").submit();
 			}
 		</script>
+		 
 		<div class="tab-page" id="tabPage11">
 			 <h2 class="tab">Site Settings</h2>
-			<div style="position:relative; float:right; left:-9px;">
+			<div style="position:relative;">
 				Website Status: <select><option>Online</option><option>Offline</option></select> <input type="button" value="Change">
 			</div>
+			<br>
+			<br>
+			<%= link_to_function "Email Content", "showEmail()" %>
+			<br>
+			</br>
+			<br>
+			<div id= "edit_email" style="position:relative;display:none;"> 
+			<%= label_tag "Edit Email Contents:" %>
+			
+			<% form_tag '/admin/edit_email', :id => "edit_email" do %>
+			 <% use_tinymce -%>
+  			<%= text_area_tag 'edit_email_box', nil, :class => "mce-editor", :style => "width:100%;height:100%;" %>
+  			
+  			<span style="position:relative; float:right">
+  			<%= submit_tag "Save" %>
+  			<%= button_to_function "Cancel", "hideEmail()" %>
+  			</span>
+  			<% end %>
+  			</div>
+  			<script language="text/javascript" type="text/javascript">
+  				function showEmail() {
+  					Element.show("edit_email");
+  				}
+  				function hideEmail() {
+  					Element.hide("edit_email");
+  				}
+  			</script>
 		</div>
 </div> <!--end of container-->
 

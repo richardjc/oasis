@@ -8,15 +8,22 @@
   <title>Admin: <%= controller.action_name %></title>
 <!-- START_HIGHLIGHT -->
   <%= stylesheet_link_tag 'myStyles', 'dirlister', 'dirlister_style' %>
+  <%= javascript_include_tag "prototype" %>
+  <%= yield :tinymce %>
+  <%= javascript_include_tag "scriptaculous" %> 
+  <%= javascript_include_tag "effects" %> 
+  <%= javascript_include_tag "controls" %>
+  <%= yield :tinymce_init %>
+
 <!-- END_HIGHLIGHT -->
 </head>
 <!-- END:head -->
 <body>
 <% if flash[:notice] %>
-<p style="border: 2px solid red; padding: 1em; margin-bottom: 2em; background-color: #f0f0f0; font: bold sans;"><%= flash[:notice] %></p>
+<p style="border: 2px solid red; padding: 1em; margin-bottom: 2em; background-color: #f0f0f0; font: bold sans; font-size: medium;"><%= flash[:notice] %></p>
 <% end %>
 <% if flash[:message] %>
-<p style="border: 2px solid lightgreen; padding:1em; margin-bottom: 2em; background-color: mintcream; font:bold sans;color:green"><%= flash[:message] %></p>
+<p style="border: 2px solid lightgreen; padding:1em; margin-bottom: 2em; background-color: mintcream; font:bold sans;color:green; font-size: medium;"><%= flash[:message] %></p>
 <% end %>
 <%= yield  %>
 

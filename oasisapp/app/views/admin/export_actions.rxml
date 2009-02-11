@@ -33,6 +33,12 @@ xml.Workbook({
           xml.Cell do
           	if column.human_name == 'Change made'
           		xml.Data 'Action Performed', 'ss:Type' => 'String'
+          	elsif column.human_name == 'Created at'
+          		xml.Data 'Date', 'ss:Type' => 'String'
+          	elsif column.human_name == 'Ip add'
+          	   xml.Data 'IP Address', 'ss:Type' => 'String'
+          	elsif column.human_name == "Updated at"
+  	
           	else
             	xml.Data column.human_name, 'ss:Type' => 'String'
             end
@@ -49,7 +55,9 @@ xml.Workbook({
         	 end
           for column in Changes.content_columns do
             xml.Cell do 
+              unless column.human_name == "Updated at"
               xml.Data record.send(column.name), 'ss:Type' => 'String'
+              end
             end
           end
         end
