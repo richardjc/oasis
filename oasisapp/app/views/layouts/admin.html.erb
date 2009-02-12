@@ -1,4 +1,3 @@
-<<<<<<< HEAD:oasisapp/app/views/layouts/admin.html.erb
 <!-- START:head -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -30,30 +29,3 @@
 
 </body>
 </html>
-
-
-=======
-<!-- START:head -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>Admin: <%= controller.action_name %></title>
-<!-- START_HIGHLIGHT -->
-  <%= stylesheet_link_tag 'myStyles', 'dirlister', 'dirlister_style' %>
-<!-- END_HIGHLIGHT -->
-</head>
-<!-- END:head -->
-<body>
-<% if flash[:notice] %>
-<p style="border: 2px solid red; padding: 1em; margin-bottom: 2em; background-color: #f0f0f0; font: bold sans;"><%= flash[:notice] %></p>
-<% end %>
-<%= yield  %>
-
-</body>
-</html>
-
-
->>>>>>> 66164665176a30032298e51cc401d557080e8861:oasisapp/app/views/layouts/admin.html.erb
