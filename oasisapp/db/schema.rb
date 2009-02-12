@@ -9,7 +9,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD:oasisapp/db/schema.rb
 ActiveRecord::Schema.define(:version => 20090210074838) do
+=======
+
+ActiveRecord::Schema.define(:version => 20090207201143) do
+
+
+  create_table "actions", :force => true do |t|
+    t.text     "action",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "admin_id"
+  end
+>>>>>>> 66164665176a30032298e51cc401d557080e8861:oasisapp/db/schema.rb
 
   create_table "admins", :force => true do |t|
     t.string   "username",        :limit => 40, :null => false
@@ -21,8 +34,6 @@ ActiveRecord::Schema.define(:version => 20090210074838) do
     t.boolean  "active",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "email"
-    t.datetime "last_visit"
   end
 
   create_table "announcements", :force => true do |t|
@@ -33,6 +44,22 @@ ActiveRecord::Schema.define(:version => 20090210074838) do
     t.text     "summary"
   end
 
+<<<<<<< HEAD:oasisapp/db/schema.rb
+=======
+  create_table "asessions", :force => true do |t|
+    t.string   "ip_add",     :null => false
+    t.datetime "time_out",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "admin_id"
+  end
+
+  create_table "attendances", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+>>>>>>> 66164665176a30032298e51cc401d557080e8861:oasisapp/db/schema.rb
   create_table "campus_activities", :force => true do |t|
     t.datetime "date",       :null => false
     t.text     "activity",   :null => false
@@ -49,6 +76,7 @@ ActiveRecord::Schema.define(:version => 20090210074838) do
     t.datetime "updated_at"
   end
 
+<<<<<<< HEAD:oasisapp/db/schema.rb
   create_table "cur_onlines", :force => true do |t|
     t.datetime "date"
     t.string   "name"
@@ -57,6 +85,8 @@ ActiveRecord::Schema.define(:version => 20090210074838) do
     t.datetime "updated_at"
   end
 
+=======
+>>>>>>> 66164665176a30032298e51cc401d557080e8861:oasisapp/db/schema.rb
   create_table "followers", :force => true do |t|
     t.integer  "idno"
     t.integer  "user_id"
@@ -78,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20090210074838) do
     t.boolean  "resolved",   :default => false
   end
 
+<<<<<<< HEAD:oasisapp/db/schema.rb
   create_table "reports", :force => true do |t|
     t.date     "date"
     t.integer  "total"
@@ -96,6 +127,11 @@ ActiveRecord::Schema.define(:version => 20090210074838) do
   create_table "students", :force => true do |t|
     t.string   "idno"
     t.string   "name"
+=======
+  create_table "sms", :force => true do |t|
+    t.string   "smstext"
+    t.string   "phone"
+>>>>>>> 66164665176a30032298e51cc401d557080e8861:oasisapp/db/schema.rb
     t.datetime "created_at"
     t.datetime "updated_at"
   end
