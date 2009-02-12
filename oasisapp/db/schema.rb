@@ -9,15 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090202005827) do
-
-  create_table "actions", :force => true do |t|
-    t.text     "action",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "admin_id"
-    t.string   "ip_add"
-  end
+ActiveRecord::Schema.define(:version => 20090210074838) do
 
   create_table "admins", :force => true do |t|
     t.string   "username",        :limit => 40, :null => false
@@ -41,20 +33,28 @@ ActiveRecord::Schema.define(:version => 20090202005827) do
     t.text     "summary"
   end
 
-  create_table "asessions", :force => true do |t|
-    t.string   "ip_add",     :null => false
-    t.datetime "time_out",   :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "admin_id"
-  end
-
   create_table "campus_activities", :force => true do |t|
     t.datetime "date",       :null => false
     t.text     "activity",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "summary"
+  end
+
+  create_table "changes", :force => true do |t|
+    t.text     "change_made", :null => false
+    t.string   "ip_add"
+    t.integer  "admin_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "cur_onlines", :force => true do |t|
+    t.datetime "date"
+    t.string   "name"
+    t.string   "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "followers", :force => true do |t|
@@ -76,6 +76,21 @@ ActiveRecord::Schema.define(:version => 20090202005827) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "resolved",   :default => false
+  end
+
+  create_table "reports", :force => true do |t|
+    t.date     "date"
+    t.integer  "total"
+    t.integer  "unique"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sms", :force => true do |t|
+    t.string   "smstext"
+    t.string   "phone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "students", :force => true do |t|
@@ -101,6 +116,12 @@ ActiveRecord::Schema.define(:version => 20090202005827) do
     t.string   "middle_name"
     t.integer  "number_of_wards",                         :default => 0
     t.string   "status"
+    t.string   "address"
+    t.string   "cp_number"
+    t.integer  "lang_pref"
+    t.string   "nickname"
+    t.boolean  "email_pref"
+    t.boolean  "mobile_pref"
   end
 
   create_table "violations", :force => true do |t|
